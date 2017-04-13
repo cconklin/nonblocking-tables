@@ -1,17 +1,32 @@
 CXX = g++-6
 CXX_FLAGS = -I./include --std=c++11 -O3
-SRC = $(wildcard src/*.cpp)
 
 BENCHMARKS = obstruction_free_set lock_free_set
 
-BM = $(BENCHMARKS:%=benchmarks/%)
+BM = $(BENCHMARKS:%=bin/%)
+SOURCE_OBJECTS = $(patsubst src/%.cpp,objects/%.o,$(wildcard src/*.cpp))
+BENCHMARK_OBJECTS = $(patsubst %, objects/benchmark_%.o, $(BENCHMARKS))
+OBJECTS = $(BENCHMARK_OBJECTS) $(SOURCE_OBJECTS)
 
 .PHONY: all
-all: $(BM)
+all: $(BM) bin objects
 
-$(BM): %: %.cpp $(SRC)
-	$(CXX) $(CXX_FLAGS) $^ -o $@
+bin:
+	mkdir bin
+
+objects:
+	mkdir objects
+
+$(BENCHMARK_OBJECTS): objects/benchmark_%.o: benchmarks/%.cpp
+	$(CXX) $(CXX_FLAGS) -o $@ -c $<
+
+$(SOURCE_OBJECTS): objects/%.o: src/%.cpp
+	$(CXX) $(CXX_FLAGS) -o $@ -c $<
+
+$(BM): bin/%: objects/benchmark_%.o objects/nonblocking.o objects/%.o
+	$(CXX) $(CXX_FLAGS) -o $@ $^
 
 clean:
 	rm -f $(BM)
+	rm -f $(SOURCE_OBJECTS) $(BENCHMARK_OBJECTS)
 
