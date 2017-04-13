@@ -39,12 +39,6 @@ namespace nonblocking
         return (bkt.state() != empty) && (hash(bkt.key) == h);
     }
 
-    unsigned int obstruction_free_set::hash(unsigned int key)
-    {
-        // Hashing the integer key gives itself -- want good scattering
-        return static_cast<unsigned int>(_hash(std::to_string(key))) % size;
-    }
-
     obstruction_free_set::obstruction_free_set(unsigned int size) : base(size)
     {
         // std::atomic and new work in clang, but not gcc...

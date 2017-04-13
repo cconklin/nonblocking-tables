@@ -25,8 +25,6 @@ namespace nonblocking
     
         std::atomic<bucket>* bucket_at(unsigned int h, int index);
         bool does_bucket_contain_collision(unsigned int h, int index);
-        std::hash<std::string> _hash;
-        unsigned int hash(unsigned int key);
     
     public:
     

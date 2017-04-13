@@ -16,6 +16,30 @@ namespace nonblocking
 
     search_bound::search_bound() : bound{0}, scanning{0} {}
 
+    template<> versioned<unsigned int>::versioned(unsigned int version, unsigned int value) : _version{version}, _value{value} {}
+    template<> versioned<unsigned int>::versioned() : _version{0}, _value{0} {}
+
+    template<> unsigned int versioned<unsigned int>::value()
+    {
+        return _value;
+    }
+
+    template<> unsigned int versioned<unsigned int>::version()
+    {
+        return _version;
+    }
+
+    template<> bool versioned<unsigned int>::operator==(versioned<unsigned int> other)
+    {
+        return (_version == other._version) && (_value == other._value);
+    }
+
+    unsigned int base::hash(unsigned int key)
+    {
+        // Hashing the integer key gives itself -- want good scattering
+        return static_cast<unsigned int>(_hash(std::to_string(key))) % size;
+    }
+
     base::base(unsigned int size) : size{size}
     {
         bounds = static_cast<std::atomic<search_bound>* >(malloc(size * sizeof(std::atomic<search_bound>)));
