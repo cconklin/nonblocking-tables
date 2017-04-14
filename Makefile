@@ -8,7 +8,7 @@ BENCHMARK_OBJECTS = $(patsubst %, objects/benchmark_%.o, $(BENCHMARKS))
 OBJECTS = $(BENCHMARK_OBJECTS) $(SOURCE_OBJECTS)
 
 .PHONY: all
-all: $(BM)
+all: $(BM) bin objects
 
 bin:
 	mkdir bin
@@ -16,13 +16,13 @@ bin:
 objects:
 	mkdir objects
 
-$(BENCHMARK_OBJECTS): objects/benchmark_%.o: benchmarks/%.cpp objects
+$(BENCHMARK_OBJECTS): objects/benchmark_%.o: benchmarks/%.cpp
 	$(CXX) $(CXX_FLAGS) -o $@ -c $<
 
-$(SOURCE_OBJECTS): objects/%.o: src/%.cpp objects
+$(SOURCE_OBJECTS): objects/%.o: src/%.cpp
 	$(CXX) $(CXX_FLAGS) -o $@ -c $<
 
-$(BM): bin/%: objects/benchmark_%.o objects/nonblocking.o objects/%.o bin
+$(BM): bin/%: objects/benchmark_%.o objects/nonblocking.o objects/%.o
 	$(CXX) $(CXX_FLAGS) -o $@ objects/benchmark_$*.o objects/nonblocking.o objects/$*.o
 
 clean:

@@ -17,7 +17,7 @@ namespace nonblocking
     search_bound::search_bound() : bound{0}, scanning{0} {}
 
     template<> versioned<unsigned int>::versioned(unsigned int version, unsigned int value) : _version{version}, _value{value} {}
-    template<> versioned<unsigned int>::versioned() : _version{0}, _value{0} {}
+    template<> versioned<unsigned int>::versioned() noexcept : _version{0}, _value{0} {}
 
     template<> unsigned int versioned<unsigned int>::value()
     {

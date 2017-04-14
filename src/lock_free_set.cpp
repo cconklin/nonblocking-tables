@@ -14,7 +14,7 @@ namespace nonblocking
             case lock_free_set::bucket_state::member: _value = 5; break;
         }
     }
-    template<> versioned<lock_free_set::bucket_state>::versioned() : _version{0}, _value{0} {}
+    template<> versioned<lock_free_set::bucket_state>::versioned() noexcept : _version{0}, _value{0} {}
     
     template<> bool versioned<lock_free_set::bucket_state>::operator==(versioned<lock_free_set::bucket_state> other)
     {
@@ -107,7 +107,7 @@ namespace nonblocking
                 if (std::atomic_compare_exchange_strong_explicit(&bucket->vs, &state, versioned<bucket_state>(state.version(), busy), std::memory_order_release, std::memory_order_relaxed))
                 {
                     conditionally_lower_bound(h, i);
-                    bucket->vs.store(versioned<bucket_state>(state.version() + 1, empty));
+                    bucket->vs.store(versioned<bucket_state>(state.version() + 1, empty), std::memory_order_release);
                     return true;
                 }
             }
@@ -196,6 +196,7 @@ namespace nonblocking
             }
         }
         std::atomic_compare_exchange_strong_explicit(&bucket_at(h, i)->vs, &old_vs, versioned<bucket_state>(ver_i, member), std::memory_order_release, std::memory_order_relaxed);
+        return true;
     }
 
     lock_free_set::~lock_free_set()

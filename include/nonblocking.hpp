@@ -21,7 +21,7 @@ namespace nonblocking
         unsigned int _version : 16, _value : 16;
     public:
         versioned(unsigned int version, T value);
-        versioned();
+        versioned() noexcept;
         unsigned int version(void);
         T value(void);
         bool operator==(versioned<T> other);
