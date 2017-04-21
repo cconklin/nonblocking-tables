@@ -62,7 +62,7 @@ int main(int argc, const char *argv[])
     for (auto t : threads)
     {
         auto runtime = benchmark(t, ops, reads, writes, deletes);
-        std::cout << "[" << t << "] Microseconds / Op: " << 1000000.0 * runtime / static_cast<double>(ops) << std::endl;
+        std::cout << "[" << t << "] Microseconds / Op: " << 1000000.0 * runtime / static_cast<double>(ops*t) << std::endl;
     }
     return 0;
 }
