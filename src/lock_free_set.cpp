@@ -183,14 +183,14 @@ namespace nonblocking
                             std::atomic_compare_exchange_strong_explicit(&bkt_at->vs, &state, versioned<bucket_state>(state.version(), collided), std::memory_order_relaxed, std::memory_order_relaxed);
                         }
                     }
-                    auto new_state = bkt_at->vs.load(std::memory_order_acquire);
-                    if ((new_state.value() == member) && (bkt_at->key.load(std::memory_order_acquire) == key))
+                }
+                auto new_state = bkt_at->vs.load(std::memory_order_acquire);
+                if ((new_state.value() == member) && (bkt_at->key.load(std::memory_order_acquire) == key))
+                {
+                    if (bkt_at->vs.load(std::memory_order_relaxed) == new_state)
                     {
-                        if (bkt_at->vs.load(std::memory_order_relaxed) == new_state)
-                        {
-                            std::atomic_compare_exchange_strong_explicit(&bucket_at(h, i)->vs, &old_vs, versioned<bucket_state>(ver_i, collided), std::memory_order_relaxed, std::memory_order_relaxed);
-                            return false;
-                        }
+                        std::atomic_compare_exchange_strong_explicit(&bucket_at(h, i)->vs, &old_vs, versioned<bucket_state>(ver_i, collided), std::memory_order_relaxed, std::memory_order_relaxed);
+                        return false;
                     }
                 }
             }
