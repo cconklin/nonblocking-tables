@@ -61,8 +61,11 @@ int main(int argc, const char *argv[])
     std::vector<int> threads = {1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128};
     for (auto t : threads)
     {
-        auto runtime = benchmark(t, ops, reads, writes, deletes);
-        std::cout << "[" << t << "] Microseconds / Op: " << 1000000.0 * runtime / static_cast<double>(ops*t) << std::endl;
+        for (int i = 0; i < 3; ++i)
+        {
+            auto runtime = benchmark(t, ops, reads, writes, deletes);
+            std::cout << t << " Microseconds/Op: " << 1000000.0 * runtime / static_cast<double>(ops*t) << std::endl;
+        }
     }
     return 0;
 }
