@@ -54,7 +54,6 @@ double benchmark(int t, int ops, int reads, int writes, int deletes)
 
 int main(int argc, const char *argv[])
 {
-    auto ops = 10000;
     auto reads = 8;
     auto writes = 1;
     auto deletes = 1;
@@ -63,6 +62,7 @@ int main(int argc, const char *argv[])
     {
         for (int i = 0; i < 3; ++i)
         {
+            auto ops = 640000 / t;
             auto runtime = benchmark(t, ops, reads, writes, deletes);
             std::cout << t << " Microseconds/Op: " << 1000000.0 * runtime / static_cast<double>(ops*t) << std::endl;
         }
